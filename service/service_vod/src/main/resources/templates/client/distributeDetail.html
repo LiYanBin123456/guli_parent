@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+
+<head>
+    <meta charset="UTF-8">
+    <title>渠道商明细</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8"/>
+    <link rel="stylesheet" href="./../css/font.css">
+    <link rel="stylesheet" href="./../css/xadmin.css">
+    <script src="./../lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./../js/xadmin.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+
+        [name=salary_item_defined]:after {
+            content: "×";
+            position: relative;
+            left: 5px;
+            top: -12px;
+            color: red;
+        }
+
+    </style>
+</head>
+<body>
+<div class="layui-tab layui-tab-brief" lay-filter="tab_info">
+    <ul class="layui-tab-title">
+        <li class="layui-this" lay-id="base">基础信息</li>
+        <li lay-id="client">引进客户</li>
+    </ul>
+    <div class="layui-tab-content">
+        <!--基本信息-->
+        <div class="layui-tab-item layui-show">
+            <form lay-filter="form_distribute" class="layui-form">
+                <input type='hidden' name='id'/>
+                <input type='hidden' name='type'/>
+                <fieldset class="layui-elem-field layui-field-title">
+                    <legend>基本信息</legend>
+                </fieldset>
+                <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">
+                        <span class="x-red">*</span>名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="name" required="" autocomplete="off" class="layui-input"></div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">
+                        <span class="x-red">*</span>信用代码</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="code" required=""  autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                    <label class="layui-form-label">
+                        <span class="x-red">*</span>联系人</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="contact" required=""  autocomplete="off"
+                               class="layui-input">
+                    </div>
+                    </div>
+                    <div class="layui-inline">
+                    <label class="layui-form-label">
+                        <span class="x-red">*</span>地址</label>
+                    <div class="layui-input-inline">
+                        <input type="text"  name="address"
+                               required="" autocomplete="off" class="layui-input"></div>
+                     </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                    <label class="layui-form-label">
+                        <span class="x-red">*</span>微信号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="wx" required="" autocomplete="off" class="layui-input">
+                    </div>
+                    </div>
+                    <div class="layui-inline">
+                    <label class="layui-form-label">电话</label>
+                    <div class="layui-input-inline">
+                        <input type="text"  name="phone" required=""
+                               autocomplete="off" class="layui-input"></div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label"><span class="x-red">*</span>开户银行</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="bank" required="" autocomplete="off" class="layui-input">
+                        </div>
+                     </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">
+                            <span class="x-red">*</span>银行账户
+                        </label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="cardNo" required="" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+               <div class="layui-form-item" style="text-align: center" >
+                    <button lay-submit lay-filter="submit_distribute" class="layui-btn" >保存</button>
+                </div>
+            </form>
+        </div>
+        <!--引进客户-->
+        <div class="layui-tab-item">
+            <fieldset class="layui-elem-field layui-field-title">
+                <legend>引进客户</legend>
+            </fieldset>
+            <div id="container" lay-filter="table_client">
+                <table id="tbl_cooperation" lay-filter="filter_tb_cooperation"></table>
+            </div>
+            <div class="layui-table-page" id="pager"></div>
+        </div>
+    </div>
+</div>
+
+<script type="text/html" id="bar_client">
+    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="contract"><i class="layui-icon layui-icon-edit"></i>查看合同</a>
+</script>
+</body>
+<script src="../js/jquery.min.js"></script>
+<script src="../js/jquery.params.js"></script>
+<script src="../js/interface.js"></script>
+<script src="../js/fieldSet.js"></script>
+<script>
+    var form;//表单对象
+    var laypage;//分页对象
+    var table;
+    var layer;
+    var editer;
+    var element;
+    var distribute=null;//初始化渠道商信息
+    var tree;
+    loadLayuiModule();
+    function loadLayuiModule() {
+        layui.use(['form', 'table', 'layedit', 'layer', 'element', 'jquery','tree','laypage'], function () {
+            form = layui.form;
+            laypage = layui.laypage;
+            table = layui.table;
+            element = layui.element;
+            layer = layui.layer;
+            layedit = layui.layedit;
+            tree = layui.tree;
+            editer = layedit.build('content'); //建立编辑器
+            //监听Tab切换，以改变地址hash值
+            element.on('tab(tab_info)', function () {
+                var id = this.getAttribute('lay-id');
+                switch (id) {
+                    case "client":
+                        initTable();
+                        break;
+                }
+            });
+            initPage();
+        });
+    }
+
+    function initPage() {
+        showDistribute();
+        form.on('submit(submit_distribute)', function(data){
+            saveDistribute(data.field);
+            element.tabChange('tab_info', 'form_contract');
+            return false;
+        });
+        //保存合同信息
+//        form.on('submit(submit_contract)', function(data){
+//            saveContract(data.field);
+//            return false;
+//        });
+    }
+
+    //初始化表格
+    function initTable() {
+        //初始化数据表格
+        table.render({
+            elem: '#tbl_cooperation',
+            title: '合作客户列表',
+            cellMinWidth: 80, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            cols: columns_client_distribute,
+            limit: 200,
+            id: 'tbl_cooperation'
+        });
+        getList(1,5,{});
+        //行内工具栏事件响应
+        table.on('tool(filter_tb_cooperation)', function(obj){ //注：tool 是工具条事件名，filter_tb_notice是table原始容器的属性lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            switch (obj.event){
+                case "contract":
+                    var aid = distribute.id;//渠道商的id
+                    var bid = data.id;//客户的id
+                    showContract(aid,bid);
+                    break;
+            }
+        });
+    }
+
+    //获取引进客户的列表
+    function getList(current,limit,clientQuery) {
+        $.ajax({
+            url: '/eduservice/client/getClientList/'+current+'/'+limit,
+            data:JSON.stringify(clientQuery),
+            contentType:"application/json",
+            type:"post",
+            SYNC:false,
+            ASYNC:true,
+            dataType:"text",
+            success:function(res) {
+                var data = JSON.parse(res);
+                table.reload('tbl_cooperation', {
+                    data:data.data.rows
+                });
+                //初始化分页
+                laypage.render({
+                    elem: 'pager'
+                    ,curr:current
+                    ,count: data.data.total //数据总数
+                    ,limit: limit
+                    ,limits: [10, 20, 50, 100, 200]
+                    ,layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh']
+                    ,jump: function(obj,first){
+                        //首次不执行
+                        if(!first){
+                            getList(obj.curr,obj.limit,{});
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    //展示所有客户信息
+    function showDistribute() {
+        distribute = JSON.parse($.query.get("distribute"));
+        if (distribute!=null){
+            form.val('form_distribute', distribute);
+        }
+    }
+
+    //保存渠道商的信息
+    function saveDistribute(distribute) {
+        if(distribute.id) {//修改
+            $.ajax({
+                url: '/eduservice/distribute/updateDistribute',
+                data: JSON.stringify(distribute),
+                contentType: "application/json",
+                type: "post",
+                SYNC: false,
+                ASYNC: true,
+                dataType: "text",
+                success: function () {
+                    layer.msg("修改成功");
+                    form.val('form_distribute', distribute);
+                }
+            });
+        }else {//插入
+            $.ajax({
+                url: '/eduservice/distribute/addDistribute',
+                data: JSON.stringify(distribute),
+                contentType: "application/json",
+                type: "post",
+                SYNC: false,
+                ASYNC: true,
+                dataType: "text",
+                success: function (index) {
+                    layer.msg("插入成功");
+                    form.val('form_distribute', distribute);
+                }
+            });
+        }
+    }
+
+//    //获取合同
+//    function getContract() {
+//        if (distribute!=null){
+//            var bid = distribute.id;
+//            var type=2;
+//            $.ajax({
+//                url: '/eduservice/contract/findAll'+"/"+bid+"/"+type,
+//                contentType: "application/json",
+//                type: "post",
+//                SYNC: false,
+//                ASYNC: true,
+//                dataType: "text",
+//                success: function (res) {
+//                    var data = JSON.parse(res);
+//                    var contract = data.data.rows[0];
+//                     form.val('form_contract', contract);
+//                    }
+//                });
+//        }
+//    }
+//
+//    //保存合同
+//    function saveContract(contract) {
+//        if(contract.id) {//修改
+//            $.ajax({
+//                url: '/eduservice/contract/updateContract',
+//                data: JSON.stringify(contract),
+//                contentType: "application/json",
+//                type: "post",
+//                SYNC: false,
+//                ASYNC: true,
+//                dataType: "text",
+//                success: function () {
+//                    layer.msg("修改成功");
+//                    form.val('form_contract', contract);
+//                }
+//            });
+//        }else {//插入
+//            contract.type=2;//平台与渠道商的合同
+//            contract.bid=distribute.id;
+//            contract.aid=0;
+//            $.ajax({
+//                url: '/eduservice/contract/addContract',
+//                data: JSON.stringify(contract),
+//                contentType: "application/json",
+//                type: "post",
+//                SYNC: false,
+//                ASYNC: true,
+//                dataType: "text",
+//                success: function () {
+//                    layer.msg("插入成功");
+//                    form.val('form_contract', contract);
+//                }
+//            });
+//        }
+//    }
+
+    //获取渠道商与客户的合同
+    function showContract(aid,bid){
+        var content = "./contractDetail.html?aid="+aid+"&&bid="+bid;
+        layer.open({
+            title:"合同详情",
+            type: 2,
+            area: ['80%', '90%'],
+            content: content,
+            cancel:function (index) {
+                layer.close(index);
+            }
+        });
+    }
+
+</script>
+
+</html>

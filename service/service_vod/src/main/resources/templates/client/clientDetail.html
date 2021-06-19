@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+
+<head>
+    <meta charset="UTF-8">
+    <title>客户明细</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8"/>
+    <link rel="stylesheet" href="./../css/font.css">
+    <link rel="stylesheet" href="./../css/xadmin.css">
+    <script src="./../lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./../js/xadmin.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+
+        [name=salary_item_defined]:after {
+            content: "×";
+            position: relative;
+            left: 5px;
+            top: -12px;
+            color: red;
+        }
+
+    </style>
+</head>
+<body>
+<div class="layui-tab layui-tab-brief" lay-filter="tab_info">
+    <ul class="layui-tab-title">
+        <li class="layui-this" lay-id="base">基础信息</li>
+        <li lay-id="contact1">法人信息</li>
+        <li lay-id="contact2">股东信息</li>
+        <li lay-id="contact3">财务信息</li>
+        <li lay-id="contract">合同信息</li>
+    </ul>
+    <div class="layui-tab-content">
+        <!--基本信息-->
+        <div class="layui-tab-item layui-show">
+            <form lay-filter="form_client" class="layui-form">
+                <input type='hidden' name='id'/>
+                <input type='hidden' name='type'/>
+                <fieldset class="layui-elem-field layui-field-title">
+                    <legend>基本信息</legend>
+                </fieldset>
+                <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">
+                        <span class="x-red">*</span>客户名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="name" required="" autocomplete="off" class="layui-input"></div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">
+                        <span class="x-red">*</span>信用代码</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="code" required=""  autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                    <label class="layui-form-label">
+                        <span class="x-red">*</span>联系人</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="contact" required=""  autocomplete="off"
+                               class="layui-input">
+                    </div>
+                    </div>
+                    <div class="layui-inline">
+                    <label class="layui-form-label">
+                        <span class="x-red">*</span>实际控制人</label>
+                    <div class="layui-input-inline">
+                        <input type="text"  name="control"
+                               required="" autocomplete="off" class="layui-input"></div>
+                     </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                    <label class="layui-form-label">
+                        <span class="x-red">*</span>微信号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="wx" required="" autocomplete="off" class="layui-input">
+                    </div>
+                    </div>
+                    <div class="layui-inline">
+                    <label class="layui-form-label">地址</label>
+                    <div class="layui-input-inline">
+                        <input type="text"  name="address" required=""
+                               autocomplete="off" class="layui-input"></div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label"><span class="x-red">*</span>电话</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="phone" required="" autocomplete="off" class="layui-input">
+                        </div>
+                     </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">
+                            <span class="x-red">*</span>邮箱
+                        </label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="mail" required="" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                 </div>
+                <div class="layui-form-item">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label"><span class="x-red">*</span>开户银行</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="bank" required="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label"><span class="x-red">*</span>银行账号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="cardNo" required="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label"><span class="x-red">*</span>资源许可证</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="img1" required="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label"><span class="x-red">*</span>劳务派遣证</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="img2" required="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label"><span class="x-red">*</span>公司章程</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="img3" required="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label"><span class="x-red">*</span>产业园</label>
+                            <div class="layui-input-inline">
+                                <select name="pid" id="select_parks" lay-filter="filter_park" lay-verify="required"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               <div class="layui-form-item" style="text-align: center" >
+                    <button lay-submit lay-filter="submit_client" class="layui-btn" >保存</button>
+                </div>
+            </form>
+        </div>
+
+        <!--法人信息-->
+        <div class="layui-tab-item">
+            <form lay-filter="form_contact1" class="layui-form">
+                <input type='hidden' name='id'/>
+                <input type='hidden' name='cid'/>
+                <input type='hidden' name='type'/>
+                <fieldset class="layui-elem-field layui-field-title">
+                    <legend>法人信息</legend>
+                </fieldset>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">
+                            <span class="x-red">*</span>姓名</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="name" required="" autocomplete="off" class="layui-input"></div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">
+                            <span class="x-red">*</span>身份证号码</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="cardId" required=""  autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">
+                            <span class="x-red">*</span>电话号码</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="phone" required=""  autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">
+                            <span class="x-red">*</span>身份证图片</label>
+                        <div class="layui-input-inline">
+                            <input type="text"  name="img"
+                                   required="" autocomplete="off" class="layui-input"></div>
+                    </div>
+                </div>
+                <div class="layui-form-item" style="text-align: center" >
+                    <button lay-submit lay-filter="submit_contact1" class="layui-btn" >保存</button>
+                </div>
+            </form>
+        </div>
+
+        <!--股东信息-->
+        <div class="layui-tab-item">
+            <form lay-filter="form_contact2" class="layui-form">
+                <input type='hidden' name='id'/>
+                <input type='hidden' name='cid'/>
+                <input type='hidden' name='type'/>
+                <fieldset class="layui-elem-field layui-field-title">
+                    <legend>股东信息</legend>
+                </fieldset>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">
+                            <span class="x-red">*</span>姓名</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="name" required="" autocomplete="off" class="layui-input"></div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">
+                            <span class="x-red">*</span>身份证号码</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="cardId" required=""  autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">
+                            <span class="x-red">*</span>电话号码</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="phone" required=""  autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">
+                            <span class="x-red">*</span>身份证图片</label>
+                        <div class="layui-input-inline">
+                            <input type="text"  name="img"
+                                   required="" autocomplete="off" class="layui-input"></div>
+                    </div>
+                </div>
+                <div class="layui-form-item" style="text-align: center" >
+                    <button lay-submit lay-filter="submit_contact1" class="layui-btn" >保存</button>
+                </div>
+            </form>
+        </div>
+
+        <!--财务信息-->
+        <div class="layui-tab-item">
+            <form lay-filter="form_contact3" class="layui-form">
+                <input type='hidden' name='id'/>
+                <input type='hidden' name='cid'/>
+                <input type='hidden' name='type'/>
+                <fieldset class="layui-elem-field layui-field-title">
+                    <legend>财务信息</legend>
+                </fieldset>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">
+                            <span class="x-red">*</span>姓名</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="name" required="" autocomplete="off" class="layui-input"></div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">
+                            <span class="x-red">*</span>身份证号码</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="cardId" required=""  autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">
+                            <span class="x-red">*</span>电话号码</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="phone" required=""  autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">
+                            <span class="x-red">*</span>身份证图片</label>
+                        <div class="layui-input-inline">
+                            <input type="text"  name="img"
+                                   required="" autocomplete="off" class="layui-input"></div>
+                    </div>
+                </div>
+                <div class="layui-form-item" style="text-align: center" >
+                    <button lay-submit lay-filter="submit_contact3" class="layui-btn" >保存</button>
+                </div>
+            </form>
+        </div>
+
+        <!--合同信息-->
+        <div class="layui-tab-item">
+            <form lay-filter="form_contract" class="layui-form">
+                <input type='hidden' name='id'/>
+                <input type='hidden' name='aid'/>
+                <input type='hidden' name='bid'/>
+                <input type='hidden' name='type'/>
+                <fieldset class="layui-elem-field layui-field-title">
+                    <legend>合同信息</legend>
+                </fieldset>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">
+                            <span class="x-red">*</span>增值税比例</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="per1" required="" autocomplete="off" class="layui-input"></div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">
+                            <span class="x-red">*</span>企业所得税比例</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="per2" required=""  autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">
+                            <span class="x-red">*</span>个人所得税比例</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="per3" required=""  autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">
+                            <span class="x-red">*</span>印花税比例</label>
+                        <div class="layui-input-inline">
+                            <input type="text"  name="per4"
+                                   required="" autocomplete="off" class="layui-input"></div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">
+                            <span class="x-red">*</span>城建税比例</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="per5" required=""  autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">
+                            <span class="x-red">*</span>合同文件</label>
+                        <div class="layui-input-inline">
+                            <input type="text"  name="img"
+                                   required="" autocomplete="off" class="layui-input"></div>
+                    </div>
+                </div>
+                <div class="layui-form-item" style="text-align: center" >
+                    <button lay-submit lay-filter="submit_contract" class="layui-btn" >保存</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+</body>
+<script src="../js/jquery.min.js"></script>
+<script src="../js/jquery.params.js"></script>
+<script src="../js/interface.js"></script>
+<script src="../js/fieldSet.js"></script>
+<script>
+    var form;//表单对象
+    var table;
+    var layer;
+    var editer;
+    var element;
+    var client=null;//初始化客户信息
+    var tree;
+    loadLayuiModule();
+    function loadLayuiModule() {
+        layui.use(['form', 'table', 'layedit', 'layer', 'element', 'jquery','tree'], function () {
+            form = layui.form;
+            table = layui.table;
+            element = layui.element;
+            layer = layui.layer;
+            layedit = layui.layedit;
+            tree = layui.tree;
+            editer = layedit.build('content'); //建立编辑器
+
+            //监听Tab切换，以改变地址hash值
+            element.on('tab(tab_info)', function () {
+                var id = this.getAttribute('lay-id');
+                switch (id) {
+                    case "contact1":
+                        getContact(1);
+                        break;
+                    case "contact2":
+                        getContact(2);
+                        break;
+                    case "contact3":
+                        getContact(3);
+                        break;
+                    case "contract":
+                        getContract();
+                        break;
+                }
+            });
+            initPage();
+        });
+    }
+
+    function initPage() {
+        showClient();
+        form.on('submit(submit_client)', function(data){
+            saveClient(data.field);
+            element.tabChange('tab_info', 'form_contact1');
+            return false;
+        });
+        //保存法人信息
+        form.on('submit(submit_contact1)', function(data){
+            saveContact(1,data.field);
+            return false;
+        });
+        //保存股东信息
+        form.on('submit(submit_contact2)', function(data){
+            saveContact(2,data.field);
+            return false;
+        });
+        //保存财务信息
+        form.on('submit(submit_contact3)', function(data){
+            saveContact(3,data.field);
+            return false;
+        });
+        //保存合同信息
+        form.on('submit(submit_contract)', function(data){
+            saveContract(data.field);
+            return false;
+        });
+    }
+
+    //展示所有客户信息
+    function showClient() {
+        initPark();//初始化产业园信息
+        client = JSON.parse($.query.get("client"));
+        if (client!=null){
+            form.val('form_client', client);
+        }
+
+    }
+    //保存客户信息
+    function saveClient(client) {
+        if(client.id) {//修改
+            $.ajax({
+                url: '/eduservice/client/updateClient',
+                data: JSON.stringify(client),
+                contentType: "application/json",
+                type: "post",
+                SYNC: false,
+                ASYNC: true,
+                dataType: "text",
+                success: function () {
+                    layer.msg("修改成功");
+                    form.val('form_client', client);
+                }
+            });
+        }else {//插入
+            $.ajax({
+                url: '/eduservice/client/addTeacher',
+                data: JSON.stringify(client),
+                contentType: "application/json",
+                type: "post",
+                SYNC: false,
+                ASYNC: true,
+                dataType: "text",
+                success: function () {
+                    layer.msg("插入成功,请继续添加法人等信息");
+                    form.val('form_client', client);
+                }
+            });
+        }
+    }
+    //获取联系人
+    function getContact(type) {
+        if (client!=null){
+            var cid = client.id;
+            $.ajax({
+                url: '/eduservice/contact/findAll/'+cid+"/"+type,
+                contentType: "application/json",
+                type: "post",
+                SYNC: false,
+                ASYNC: true,
+                dataType: "text",
+                success: function (res) {
+                    var data = JSON.parse(res);
+                    var contact = data.data.rows[0];
+                    switch(type){
+                        case 1:
+                            form.val('form_contact1', contact);
+                            break;
+                        case 2:
+                            form.val('form_contact2', contact);
+                            break;
+                        case 3:
+                            form.val('form_contact3', contact);
+                            break;
+                    }
+
+                }
+            });
+        }
+    }
+    //保存或者添加联系人
+    function saveContact(type,contact) {
+        if(contact.id) {//修改
+            $.ajax({
+                url: '/eduservice/contact/updateContact',
+                data: JSON.stringify(contact),
+                contentType: "application/json",
+                type: "post",
+                SYNC: false,
+                ASYNC: true,
+                dataType: "text",
+                success: function () {
+                    layer.msg("修改成功");
+                    form.val('form_contact'+type, contact);
+                }
+            });
+        }else {//插入
+            contact.type=type;
+            contact.cid=client.id;
+            $.ajax({
+                url: '/eduservice/contact/addContact',
+                data: JSON.stringify(contact),
+                contentType: "application/json",
+                type: "post",
+                SYNC: false,
+                ASYNC: true,
+                dataType: "text",
+                success: function () {
+                    layer.msg("插入成功,请继续添加其他联系人信息");
+                    form.val('form_contact'+type, contact);
+                }
+            });
+        }
+    }
+    //获取合同
+    function getContract() {
+        if (client!=null){
+            var aid = 0;//平台与客户签订的合同
+            var bid = client.id;
+            var type=1;
+            $.ajax({
+                url: '/eduservice/contract/findAll/'+aid+"/"+bid+"/"+type,
+                contentType: "application/json",
+                type: "post",
+                SYNC: false,
+                ASYNC: true,
+                dataType: "text",
+                success: function (res) {
+                    var data = JSON.parse(res);
+                    var contract = data.data.rows[0];
+                     form.val('form_contract', contract);
+                    }
+                });
+        }
+    }
+    //保存合同
+    function saveContract(contract) {
+        if(contract.id) {//修改
+            $.ajax({
+                url: '/eduservice/contract/updateContract',
+                data: JSON.stringify(contract),
+                contentType: "application/json",
+                type: "post",
+                SYNC: false,
+                ASYNC: true,
+                dataType: "text",
+                success: function () {
+                    layer.msg("修改成功");
+                    form.val('form_contract', contract);
+                }
+            });
+        }else {//插入
+            contract.type=1;//平台与客户的合同
+            contract.bid=client.id;
+            contract.aid=0;
+            $.ajax({
+                url: '/eduservice/contract/addContract',
+                data: JSON.stringify(contract),
+                contentType: "application/json",
+                type: "post",
+                SYNC: false,
+                ASYNC: true,
+                dataType: "text",
+                success: function () {
+                    layer.msg("插入成功");
+                    form.val('form_contract', contract);
+                }
+            });
+        }
+    }
+    //查询所属的所有产业园
+    function initPark() {
+        var current =1;
+        var limit =30;
+        var Query ={};
+        $.ajax({
+            url: '/eduservice/park/getParkList/'+current+'/'+limit,
+            data:JSON.stringify(Query),
+            contentType:"application/json",
+            type:"post",
+            SYNC:false,
+            ASYNC:true,
+            dataType:"text",
+            success:function(res) {
+                var data = JSON.parse(res);
+                var parks =data.data.rows;
+                var select_parks = $("#select_parks");
+                select_parks.append("<option value='-2' selected disabled hidden>选择产业园</option>");
+                for(var i in parks){
+                    var park = parks[i];
+                    var option = $("<option>").val(park.id).text(park.name);
+                    select_parks.append(option);
+                }
+                form.render('select', 'form_client');
+            }
+        });
+    }
+</script>
+
+</html>

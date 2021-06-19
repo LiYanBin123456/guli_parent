@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+
+<head>
+    <meta charset="UTF-8">
+    <title>商业保险结算单</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8"/>
+    <link rel="stylesheet" href="../css/font.css">
+    <link rel="stylesheet" href="../css/xadmin.css">
+    <script src="./../lib/layui/layui.js" charset="utf-8"></script>
+</head>
+<body>
+<form lay-filter="form_settlement" class="layui-form" style="padding: 10px">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">
+            <span class="x-red">*</span>选择结算月份
+        </label>
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input" id="month" autocomplete="off">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">
+            <span class="x-red">*</span>选择产业园</label>
+        <div class="layui-input-inline" >
+            <select name="pid" id="select_parks" autocomplete="off" lay-filter="filter_parks" lay-verify="required"></select>
+        </div>
+    </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">
+            <span class="x-red">*</span>选择结算客户</label>
+        <div class="layui-input-inline" >
+            <select name="cid" id="select_clients" autocomplete="off" lay-filter="filter_clients" lay-verify="required"></select>
+        </div>
+    </div>
+    </div>
+
+</form>
+<table id="tbl_contract" lay-filter="filter_tb_contract"></table>
+</body>
+<script src="../js/fieldSet.js"></script>
+<script src="../js/jquery.min.js"></script>
+<script src="../js/jquery.params.js"></script>
+<script src="../js/interface.js"></script>
+<script src="../js/queryParam.js"></script>
+<script>
+    var settlement = {};
+    loadLayuiModule();
+    var form ;
+    var laydate ;
+    var table;
+    var laypage;
+    function loadLayuiModule() {
+        layui.use(['form','laydate','table','laypage'], function () {
+            form = layui.form;
+            laydate = layui.laydate;
+            table = layui.table;
+            laypage = layui.laypage;
+            initPark();
+            form.on('select(filter_parks)', function(data){
+                initClient(data.value);
+            });
+            form.on('select(filter_clients)', function(data){
+                settlement.cid=data.value;
+            });
+            laydate.render({
+                elem: '#month' //指定元素
+                ,type: 'month'
+                ,change: function(value, date, endDate){
+                    settlement.month = value+"-01";
+                }
+            });
+        });
+    }
+
+    //根据产业园查询所属的客户
+    function initClient(pid) {
+        $.ajax({
+            url: '/eduservice/client/findByPark/'+pid,
+            contentType:"application/json",
+            type:"post",
+            SYNC:false,
+            ASYNC:true,
+            dataType:"text",
+            success:function(res) {
+                var data = JSON.parse(res);
+                var clients =data.data.rows;
+                var select_clients = $("#select_clients");
+                select_clients.append("<option value='-2' selected disabled hidden>选择客户</option>");
+                for(var i in clients){
+                    var park = clients[i];
+                    var option = $("<option>").val(park.id).text(park.name);
+                    select_clients.append(option);
+                }
+                form.render('select', 'form_settlement');
+            }
+        });
+    }
+
+    //查询所有产业园的信息
+    function initPark() {
+        var current =1;
+        var limit =30;
+        var Query ={};
+        $.ajax({
+            url: '/eduservice/park/getParkList/'+current+'/'+limit,
+            data:JSON.stringify(Query),
+            contentType:"application/json",
+            type:"post",
+            SYNC:false,
+            ASYNC:true,
+            dataType:"text",
+            success:function(res) {
+                var data = JSON.parse(res);
+                var parks =data.data.rows;
+                var select_parks = $("#select_parks");
+                select_parks.append("<option value='-2' selected disabled hidden>选择产业园</option>");
+                for(var i in parks){
+                    var park = parks[i];
+                    var option = $("<option>").val(park.id).text(park.name);
+                    select_parks.append(option);
+                }
+                form.render('select', 'form_settlement');
+            }
+        });
+    }
+
+    //向调用页面返回编辑的结算单
+    var callbackData = function () {
+        return settlement;
+    }
+
+</script>
+
+</html>
