@@ -2,13 +2,10 @@ package com.atguigu.eduservice.controller;
 
 
 import com.atguigu.commonutils.R;
-import com.atguigu.eduservice.entity.Client;
-import com.atguigu.eduservice.entity.Settlement1;
-import com.atguigu.eduservice.entity.ViewSettlement1;
+import com.atguigu.eduservice.entity.*;
 import com.atguigu.eduservice.entity.query.ClientQuery;
 import com.atguigu.eduservice.entity.query.Settlement1Query;
-import com.atguigu.eduservice.service.Settlement1Service;
-import com.atguigu.eduservice.service.ViewSettlement1Service;
+import com.atguigu.eduservice.service.*;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
@@ -17,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -38,6 +37,15 @@ public class Settlement1Controller {
 
     @Autowired
     private ViewSettlement1Service viewSettlement1Service;
+
+    @Autowired
+    private Detail1Service detail1Service;
+
+    @Autowired
+    private ParkService parkService;
+
+    @Autowired
+    private ContractService contractService;
 
     @ApiOperation(value ="条件查询客户结算单视图列表")
     @PostMapping("getSettlementList/{current}/{limit}")
@@ -91,6 +99,62 @@ public class Settlement1Controller {
         if(flag) {
             return R.ok();
         } else {
+            return R.error();
+        }
+    }
+
+
+    @PostMapping("calculateSettlement")
+    public R calculate(@RequestBody ViewSettlement1 settlement){
+        /**
+         * 结算流程
+         * 1、获取产业园规则
+         * 2、获取客户合同的规则
+         * 3、根据结算单输入的数据计算
+         * 4、插入或者修改结算单明细中
+         */
+        //获取产业园的规则
+        Park park = parkService.getById(settlement.getPid());
+        if(park==null){
+           return R.error().message("请完善产业园区规则");
+        }
+
+        //获取客户合同规则
+        QueryWrapper<Contract> queryContract = new QueryWrapper<>();
+        queryContract.eq("bid",settlement.getCid());
+        queryContract.eq("type",1);
+        Contract contract = contractService.getOne(queryContract);
+        if(contract==null){
+            return R.error().message("请完善客户合同");
+        }
+
+        //计算政府扶持资金
+        Detail1 detail1 = new Detail1();
+        detail1.calculateGoverment(settlement,park);
+        detail1.setType((byte) 1);
+        detail1.setSid(settlement.getId());
+
+        //计算客户扶持资金
+        Detail1 detail2 = new Detail1();
+        detail2.calculateClient(settlement,contract);
+        detail2.setType((byte) 2);
+        detail2.setSid(settlement.getId());
+
+        //计算园区利润
+        Detail1 detail3 = new Detail1();
+        detail3.calculateProfit(detail1,detail2);
+        detail3.setType((byte) 3);
+        detail3.setSid(settlement.getId());
+
+        List<Detail1> details = new ArrayList<>();
+        details.add(detail1);
+        details.add(detail2);
+        details.add(detail3);
+        boolean flag = detail1Service.saveOrUpdateBatch(details);
+
+        if(flag){
+           return R.ok();
+        }else {
             return R.error();
         }
     }

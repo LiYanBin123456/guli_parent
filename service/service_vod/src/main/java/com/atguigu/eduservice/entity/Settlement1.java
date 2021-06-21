@@ -57,5 +57,17 @@ public class Settlement1 implements Serializable {
     @ApiModelProperty(value = "附加税")
     private BigDecimal tax4;
 
+    @ApiModelProperty(value = "附加税")
+    private BigDecimal tax5;
+
+    @ApiModelProperty(value = "附加税")
+    private BigDecimal tax6;
+
+    @ApiModelProperty(value = "附加税")
+    private BigDecimal tax7;
+
+    @ApiModelProperty(value = "附加税")
+    private BigDecimal taxAmount;
+
 
 }

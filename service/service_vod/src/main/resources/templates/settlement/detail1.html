@@ -3,7 +3,7 @@
 
     <head>
         <meta charset="UTF-8">
-        <title>结算单信息</title>
+        <title>结算单明细</title>
         <meta name="renderer" content="webkit">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8" />
@@ -51,11 +51,9 @@
 
         <!--行内工具栏-->
         <script type="text/html" id="bar_cooperation">
-            <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="save"><i class="layui-icon layui-icon-edit"></i>保存</a>
-            <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="cal"><i class="layui-icon layui-icon-edit"></i>计算</a>
-            <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="detail"><i class="layui-icon layui-icon-edit"></i>详情</a>
             <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete"><i class="layui-icon layui-icon-delete"></i> 删除</a>
         </script>
+
         <script src="../js/fieldSet.js"></script>
         <script src="../js/interface.js"></script>
         <script src="../js/jquery.min.js"></script>
@@ -91,7 +89,6 @@
                 //搜索表单提交
                 form.on('submit(search)', function(data){
                     search = data.field;
-                    getList(current,limit,search);
                     return false;
                 });
                 initTable();
@@ -104,26 +101,22 @@
                     toolbar: '#top_bar_cooperation', //开启头部工具栏，并为其绑定左侧模板
                     title: '合作客户列表',
                     cellMinWidth: 80, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-                    cols: columns_settlement1,
+                    cols: columns_detail1,
                     limit: 200,
                     id: 'tbl_cooperation'
                 });
-                getList(current,limit,search);
+                var sid = $.query.get("sid");
+                if (sid){
+                    getList(sid);
+                }
+
                 //行内工具栏事件响应
                 table.on('tool(filter_tb_cooperation)', function(obj){ //注：tool 是工具条事件名，filter_tb_notice是table原始容器的属性lay-filter="对应的值"
                     var data = obj.data; //获得当前行数据
                     switch (obj.event){
-                        case "save":
-                            save(data);
-                            break;
-                        case "cal":
-                            cal(data);
-                            break;
-                        case "detail":
-                            detail(data);
-                            break;
                     }
                 });
+
                 //顶部工具栏事件处理
                 table.on('toolbar(filter_tb_cooperation)', function(obj){
                     switch(obj.event){
@@ -133,11 +126,10 @@
                     };
                 });
             }
-            //获取客户列表
-            function getList(current,limit,Query) {
+            //获取结算单明细列表
+            function getList(sid) {
                 $.ajax({
-                    url: '/eduservice/settlement1/getSettlementList/'+current+'/'+limit,
-                    data:JSON.stringify(Query),
+                    url: '/eduservice/detail1/getDetailBySid/'+sid,
                     contentType:"application/json",
                     type:"post",
                     SYNC:false,
@@ -164,85 +156,6 @@
                             }
                         });
                     }
-                });
-            }
-
-            //打开添加对话框
-            function showInsertDlg() {
-                var content = "./settlementAdd1.html";
-                layer.open({
-                    title:"添加客户",
-                    type: 2,
-                    area: ['60%', '90%'],
-                    content: content,
-                    btn: ['添加', '关闭'],
-                    yes: function(index, layero){
-                        var settlement = window["layui-layer-iframe" + index].callbackData();
-                        insert(settlement);
-                        layer.close(index);
-                    },btn2: function(index, layero){
-                        layer.close(index);
-                    }
-                });
-            }
-
-            //添加结算单
-            function insert(settlement) {
-                $.ajax({
-                    url: '/eduservice/settlement1/addSettlement',
-                    data:JSON.stringify(settlement),
-                    contentType:"application/json",
-                    type:"post",
-                    SYNC:false,
-                    ASYNC:true,
-                    dataType:"text",
-                    success:function(index) {
-                        layer.msg("修改成功");
-                        layer.close(index);
-                    }
-                });
-            }
-
-            //保存结算单
-            function save(settlement) {
-                $.ajax({
-                    url: '/eduservice/settlement1/updateSettlement',
-                    data:JSON.stringify(settlement),
-                    contentType:"application/json",
-                    type:"post",
-                    SYNC:false,
-                    ASYNC:true,
-                    dataType:"text",
-                    success:function() {
-                        layer.msg("修改成功");
-                    }
-                });
-            }
-
-            //计算
-            function cal(settlement) {
-                $.ajax({
-                    url: '/eduservice/settlement1/calculateSettlement',
-                    data:JSON.stringify(settlement),
-                    contentType:"application/json",
-                    type:"post",
-                    SYNC:false,
-                    ASYNC:true,
-                    dataType:"text",
-                    success:function() {
-                        layer.msg("计算成功");
-                    }
-                });
-            }
-
-            //查看明细
-            function detail(settlement) {
-                var content = "./Detail1.html?sid="+settlement.id;
-                layer.open({
-                    title:"添加客户",
-                    type: 2,
-                    area: ['90%', '90%'],
-                    content: content
                 });
             }
 

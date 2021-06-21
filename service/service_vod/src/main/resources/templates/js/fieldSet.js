@@ -58,13 +58,27 @@ var columns_settlement1 = [[
     {field:'pname', title: '产业园名称',width:120},
     {field:'cname', title: '客户名称',width:100},
     {field:'month', title: '月份',width:100,templet:function (d) {return dateUtil.format_month(d.month)}},
-    {field:'base', title: '总额',width:100,edit:'text'},
     {field:'turnovers', title: '营业额',width:100,edit:'text'},
     {field:'tax1', title: '增值税',width:100,edit:'text'},
     {field:'tax2', title: '企业所得税',width:120,edit:'text'},
     {field:'tax3', title: '个人所得税',width:120,edit:'text'},
-    {field:'tax4', title: '附加税',width:120,edit:'text'},
-    {fixed: 'right', title: '操作', toolbar: '#bar_cooperation',width:200}
+    {field:'tax4', title: '城建税',width:120,edit:'text'},
+    {field:'tax5', title: '教育费附加',width:120,edit:'text'},
+    {field:'tax6', title: '地方教育附加',width:120,edit:'text'},
+    {field:'tax7', title: '印花税',width:120,edit:'text'},
+    {fixed: 'right', title: '操作', toolbar: '#bar_cooperation',width:300}
+]];
+
+//客户结算单明细
+var columns_detail1 = [[
+    {field:'type', title: '类型',width:150,templet:function (d) { return array_value2text(detail_type,d.type) }},
+    {field:'tax1', title: '增值税',width:100,edit:'text'},
+    {field:'tax2', title: '企业所得税',width:120,edit:'text'},
+    {field:'tax3', title: '个人所得税',width:120,edit:'text'},
+    {field:'tax4', title: '城建税',width:120,edit:'text'},
+    {field:'tax5', title: '教育费附加',width:120,edit:'text'},
+    {field:'tax6', title: '地方教育附加',width:120,edit:'text'},
+    {field:'tax7', title: '印花税',width:120,edit:'text'},
 ]];
 
 //渠道商结算单
@@ -81,21 +95,14 @@ var columns_settlement2 = [[
     {fixed: 'right', title: '操作', toolbar: '#bar_cooperation',width:200}
 ]];
 
-//合作单位潜在客户管理字段集合
-var columns_cooperation_potential = [[
-    {title: '序号',width:80,type:'numbers'},
-    {field:'id', title: '编号',width:100},
-    {field:'name', title: '客户名称',width:200},
-    {field:'category', title: '客户性质',width:100,templet:function (d) { return array_value2text(categorys_cooperation,d.category) }},
-    {field:'contact', title: '联系人',width:100},
-    {field:'phone', title: '联系电话',width:120},
-    {fixed: 'right', title: '操作', toolbar: '#bar_potential',width:300}
-]];
 //----------------------------------------------------------------数据集合-----------------------
-
+var detail_type = [
+    {value:1, text:"政府扶持资金"},
+    {value:2, text:"客户扶持资金"},
+    {value:3, text:"园区利润"}
+];
 
 //----------------------------------------------------------------字段格式化-----------------------
-
 
 function format_percent(value) {
     return value+"%";
