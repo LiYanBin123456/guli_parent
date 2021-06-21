@@ -79,7 +79,7 @@ public class ClientController {
 
     @ApiOperation(value = "按产业园查询客户列表")
     @PostMapping("findByPark/{pid}")
-    public R findAllContact(@PathVariable long pid) {
+    public R findByPark(@PathVariable long pid) {
         //调用service的方法实现查询所有的操作
         QueryWrapper<Client> queryWrapper = new QueryWrapper<>();
         //判断条件值是否为空，如果不为空拼接条件
@@ -92,13 +92,26 @@ public class ClientController {
     }
 
 
+    @ApiOperation(value = "按渠道商查询客户列表")
+    @PostMapping("findByDistribute/{did}")
+    public R findByDistribute(@PathVariable long did) {
+        //调用service的方法实现查询所有的操作
+        QueryWrapper<Client> queryWrapper = new QueryWrapper<>();
+        //判断条件值是否为空，如果不为空拼接条件
+        if(!StringUtils.isEmpty(did)) {
+            //构建条件，模糊查询
+            queryWrapper.eq("did",did);
+        }
+        List<Client> list = clientService.list(queryWrapper);
+        return R.ok().data("rows",list);
+    }
+
     //查询单个客户按照id
     @GetMapping("/getClient/{id}")
     public R getClient(@PathVariable long id){
         Client client = clientService.getById(id);
         return R.ok().data("client",client);
     }
-
 
     //修改客户信息
     @PostMapping("updateClient")

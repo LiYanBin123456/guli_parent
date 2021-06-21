@@ -70,11 +70,11 @@ public class Detail1 implements Serializable {
      * @param park 产业员工规则
      */
     public void calculateGoverment(ViewSettlement1 settlement, Park park){
-        this.setTax1(settlement.getTax1().multiply(BigDecimal.valueOf(park.getPer1())));
-        this.setTax2(settlement.getTax2().multiply(BigDecimal.valueOf(park.getPer2())));
-        this.setTax3(settlement.getTax3().multiply(BigDecimal.valueOf(park.getPer3())));
-        this.setTax4(settlement.getTax4().multiply(BigDecimal.valueOf(park.getPer4())));
-        this.setTax7(settlement.getTax7().multiply(BigDecimal.valueOf(park.getPer5())));
+        this.setTax1(settlement.getTax1().multiply(BigDecimal.valueOf(park.getPer1()/100)));
+        this.setTax2(settlement.getTax2().multiply(BigDecimal.valueOf(park.getPer2()/100)));
+        this.setTax3(settlement.getTax3().multiply(BigDecimal.valueOf(park.getPer3()/100)));
+        this.setTax4(settlement.getTax4().multiply(BigDecimal.valueOf(park.getPer4()/100)));
+        this.setTax7(settlement.getTax7().multiply(BigDecimal.valueOf(park.getPer5()/100)));
     }
 
     /**
@@ -83,13 +83,18 @@ public class Detail1 implements Serializable {
      * @param contract 客户合同
      */
     public void calculateClient(ViewSettlement1 settlement,Contract contract){
-        this.setTax1(settlement.getTax1().multiply(BigDecimal.valueOf(contract.getPer1())));
-        this.setTax2(settlement.getTax2().multiply(BigDecimal.valueOf(contract.getPer2())));
-        this.setTax3(settlement.getTax3().multiply(BigDecimal.valueOf(contract.getPer3())));
-        this.setTax4(settlement.getTax4().multiply(BigDecimal.valueOf(contract.getPer4())));
-        this.setTax7(settlement.getTax7().multiply(BigDecimal.valueOf(contract.getPer5())));
+        this.setTax1(settlement.getTax1().multiply(BigDecimal.valueOf(contract.getPer1()/100)));
+        this.setTax2(settlement.getTax2().multiply(BigDecimal.valueOf(contract.getPer2()/100)));
+        this.setTax3(settlement.getTax3().multiply(BigDecimal.valueOf(contract.getPer3()/100)));
+        this.setTax4(settlement.getTax4().multiply(BigDecimal.valueOf(contract.getPer4()/100)));
+        this.setTax7(settlement.getTax7().multiply(BigDecimal.valueOf(contract.getPer5()/100)));
     }
 
+    /**
+     * 计算园区利润
+     * @param d1  政府扶持金
+     * @param d2  客户扶持金
+     */
     public void calculateProfit(Detail1 d1,Detail1 d2){
         this.setTax1(d1.tax1.subtract(d2.tax1));
         this.setTax2(d1.tax2.subtract(d2.tax2));

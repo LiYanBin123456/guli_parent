@@ -159,6 +159,16 @@
                         </div>
                     </div>
                 </div>
+                <div class="layui-form-item">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label"><span class="x-red">*</span>所属渠道商</label>
+                            <div class="layui-input-inline">
+                                <select name="did" id="select_distribute" lay-filter="filter_distribute" lay-verify="required"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                <div class="layui-form-item" style="text-align: center" >
                     <button lay-submit lay-filter="submit_client" class="layui-btn" >保存</button>
                 </div>
@@ -322,13 +332,13 @@
                 <div class="layui-form-item">
                     <div class="layui-inline">
                         <label class="layui-form-label">
-                            <span class="x-red">*</span>增值税比例</label>
+                            <span class="x-red">*</span>增值税比例(%)</label>
                         <div class="layui-input-inline">
                             <input type="text" name="per1" required="" autocomplete="off" class="layui-input"></div>
                     </div>
                     <div class="layui-inline">
                         <label class="layui-form-label">
-                            <span class="x-red">*</span>企业所得税比例</label>
+                            <span class="x-red">*</span>企业所得税比例(%)</label>
                         <div class="layui-input-inline">
                             <input type="text" name="per2" required=""  autocomplete="off"
                                    class="layui-input">
@@ -338,7 +348,7 @@
                 <div class="layui-form-item">
                     <div class="layui-inline">
                         <label class="layui-form-label">
-                            <span class="x-red">*</span>个人所得税比例</label>
+                            <span class="x-red">*</span>个人所得税比例(%)</label>
                         <div class="layui-input-inline">
                             <input type="text" name="per3" required=""  autocomplete="off"
                                    class="layui-input">
@@ -346,7 +356,7 @@
                     </div>
                     <div class="layui-inline">
                         <label class="layui-form-label">
-                            <span class="x-red">*</span>印花税比例</label>
+                            <span class="x-red">*</span>印花税比例(%)</label>
                         <div class="layui-input-inline">
                             <input type="text"  name="per4"
                                    required="" autocomplete="off" class="layui-input"></div>
@@ -355,7 +365,7 @@
                 <div class="layui-form-item">
                     <div class="layui-inline">
                         <label class="layui-form-label">
-                            <span class="x-red">*</span>城建税比例</label>
+                            <span class="x-red">*</span>城建税比例(%)</label>
                         <div class="layui-input-inline">
                             <input type="text" name="per5" required=""  autocomplete="off"
                                    class="layui-input">
@@ -400,7 +410,6 @@
             layedit = layui.layedit;
             tree = layui.tree;
             editer = layedit.build('content'); //建立编辑器
-
             //监听Tab切换，以改变地址hash值
             element.on('tab(tab_info)', function () {
                 var id = this.getAttribute('lay-id');
@@ -455,11 +464,7 @@
     //展示所有客户信息
     function showClient() {
         initPark();//初始化产业园信息
-        client = JSON.parse($.query.get("client"));
-        if (client!=null){
-            form.val('form_client', client);
-        }
-
+        initDistribute();//初始化渠道商信息
     }
     //保存客户信息
     function saveClient(client) {
@@ -560,11 +565,10 @@
     //获取合同
     function getContract() {
         if (client!=null){
-            var aid = 0;//平台与客户签订的合同
             var bid = client.id;
             var type=1;
             $.ajax({
-                url: '/eduservice/contract/findAll/'+aid+"/"+bid+"/"+type,
+                url: '/eduservice/contract/findAll'+"/"+bid+"/"+type,
                 contentType: "application/json",
                 type: "post",
                 SYNC: false,
@@ -597,7 +601,6 @@
         }else {//插入
             contract.type=1;//平台与客户的合同
             contract.bid=client.id;
-            contract.aid=0;
             $.ajax({
                 url: '/eduservice/contract/addContract',
                 data: JSON.stringify(contract),
@@ -637,9 +640,46 @@
                     select_parks.append(option);
                 }
                 form.render('select', 'form_client');
+                client = JSON.parse($.query.get("client"));
+                if (client!=null){
+                    form.val('form_client', client);
+                }
             }
         });
     }
+    //查询所属的渠道商
+    function initDistribute() {
+        var current =1;
+        var limit =30;
+        var Query ={};
+        $.ajax({
+            url: '/eduservice/distribute/getDistributeList/'+current+'/'+limit,
+            data:JSON.stringify(Query),
+            contentType:"application/json",
+            type:"post",
+            SYNC:false,
+            ASYNC:true,
+            dataType:"text",
+            success:function(res) {
+                var data = JSON.parse(res);
+                var distributes =data.data.rows;
+                var select_distribute = $("#select_distribute");
+                select_distribute.append("<option value='-2' selected disabled hidden>选择渠道商</option>");
+                select_distribute.append("<option value='0'>平台引进</option>");
+                for(var i in distributes){
+                    var distribute = distributes[i];
+                    var option = $("<option>").val(distribute.id).text(distribute.name);
+                    select_distribute.append(option);
+                }
+                form.render('select', 'form_client');
+                client = JSON.parse($.query.get("client"));
+                if (client!=null){
+                    form.val('form_client', client);
+                }
+            }
+        });
+    }
+
 </script>
 
 </html>

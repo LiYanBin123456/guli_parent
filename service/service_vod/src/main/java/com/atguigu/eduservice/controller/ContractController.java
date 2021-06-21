@@ -38,16 +38,11 @@ public class ContractController {
      * @return
      */
     @ApiOperation(value = "按条件查询所有合同")
-    @PostMapping("findAll/{aid}/{bid}/{type}")
-    public R findAllContact(@PathVariable long aid,@PathVariable long bid, @PathVariable byte type) {
+    @PostMapping("findAll/{bid}/{type}")
+    public R findAllContact(@PathVariable long bid, @PathVariable byte type) {
         //调用service的方法实现查询所有的操作
         QueryWrapper<Contract> queryWrapper = new QueryWrapper<>();
         //判断条件值是否为空，如果不为空拼接条件
-
-        if(!StringUtils.isEmpty(aid)) {
-            //相等
-            queryWrapper.eq("aid",aid);
-        }
 
         if(!StringUtils.isEmpty(bid)) {
             //相等

@@ -88,5 +88,16 @@ public class Settlement2Controller {
             return R.error();
         }
     }
+
+    @PostMapping("calculate")
+    public R calculate(@RequestBody ViewSettlement2 settlement){
+        /**
+         * 计算流程
+         * 1、获取到这月份该渠道商所引进的所有客户的结算单
+         * 2、将他们所有的税费相加
+         * 3、
+         */
+        return null;
+    }
 }
 

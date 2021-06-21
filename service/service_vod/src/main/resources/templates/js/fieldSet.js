@@ -18,15 +18,12 @@ var columns_client = [[
 
 //所属渠道商的客户管理字段
 var columns_client_distribute = [[
-    {field:'id', title: '编号',width:70},
-    {field:'did', title: '渠道商id',width:50},
     {field:'name', title: '名称',width:200},
     {field:'contact', title: '联系人',width:100},
     {field:'control', title: '实际控制人',width:100},
     {field:'code', title: '信用代码',width:100},
     {field:'phone', title: '联系电话',width:120},
-    {field:'address', title: '地址',width:120},
-    {fixed: 'right', title: '操作', toolbar: '#bar_client',width:100}
+    {field:'address', title: '地址',width:120}
 ]];
 
 //渠道商管理字段集合
@@ -44,11 +41,11 @@ var columns_distribute = [[
 var columns_park = [[
     {field:'id', title: '编号',width:70},
     {field:'name', title: '产业园名称',width:200},
-    {field:'per1', title: '增值税比例比例',width:100},
-    {field:'per2', title: '企业所得税比例',width:100},
-    {field:'per3', title: '个人所得税比例',width:120},
-    {field:'per4', title: '印花所得税比例',width:120},
-    {field:'per5', title: '城建税比例',width:120},
+    {field:'per1', title: '增值税比例(%)',width:120},
+    {field:'per2', title: '企业所得税比例(%)',width:120},
+    {field:'per3', title: '个人所得税比例(%)',width:120},
+    {field:'per4', title: '印花所得税比例(%)',width:120},
+    {field:'per5', title: '城建税比例(%)',width:120},
     {fixed: 'right', title: '操作', toolbar: '#bar_cooperation',width:200}
 ]];
 

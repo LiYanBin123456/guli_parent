@@ -29,9 +29,6 @@ public class Contract implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    @ApiModelProperty(value = "渠道商id 平台默认为0")
-    private Long aid;
-
     @ApiModelProperty(value = "客户的id")
     private Long bid;
 
